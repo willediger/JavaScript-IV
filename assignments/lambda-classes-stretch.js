@@ -32,6 +32,14 @@ class Instructor extends Person {
     console.log(result);
     return result;
   }
+  changeGrade(student) {
+    //randomly assign a grade change from -40 to +60 (so it's more likely they'll incrase their grades than to decrease their grades)
+    let gradeChange = Math.round(Math.random()*100) - 40;
+
+    //applying the grade change
+    student.grade += gradeChange;
+    return gradeChange;
+  }
 }
 
 class Student extends Person {
@@ -40,6 +48,7 @@ class Student extends Person {
     this.previousBackground = attributes.previousBackground;
     this.className = attributes.className;
     this.favSubjects = attributes.favSubjects;
+    this.grade = attributes.grade;
   }
   listsSubjects () {
     this.favSubjects.forEach(e => console.log(e));
@@ -54,6 +63,15 @@ class Student extends Person {
     let result = `${this.name} has begun sprint challenge on ${subject}`;
     console.log(result);
     return result;
+  }
+  graduate () {
+    if (this.grade > 70) {
+      console.log(`${this.name} has graduated from Lambda School!`)
+      return true;
+    } else {
+      console.log(`${this.name} only has a ${this.grade}`)
+      return false;
+    }
   }
 }
 
@@ -86,16 +104,6 @@ const fred = new Instructor({
   catchPhrase: `Don't forget the homies`
 });
 
-const carolie = new Instructor({
-  name: 'Carolie',
-  location: 'Winfield',
-  age: 59,
-  gender: 'female',
-  favLanguage: 'C#',
-  specialty: 'Back-end',
-  catchPhrase: `let's go`
-});
-
 
 const will = new Student({
   name: 'Will',
@@ -104,17 +112,8 @@ const will = new Student({
   gender: 'male',
   previousBackground: 'Actuary',
   className: 'FSW',
-  favSubjects: ['JS', 'Python']
-});
-
-const joe = new Student({
-  name: 'Joe',
-  location: 'Wichita',
-  age: 21,
-  gender: 'male',
-  previousBackground: 'Personal Trainer',
-  className: 'iOS',
-  favSubjects: ['Swift', 'Objective-C']
+  favSubjects: ['JS', 'Python'],
+  grade: 50
 });
 
 const mike = new PM({
@@ -129,69 +128,17 @@ const mike = new PM({
   favInstructor: 'Cam'
 });
 
-const robbie = new PM({
-  name: 'Robbie',
-  location: 'Lenexa',
-  age: 32,
-  gender: 'male',
-  favLanguage: 'Python',
-  specialty: 'Back-end',
-  catchPhrase: `waddup`,
-  gradClassName: 'JS',
-  favInstructor: 'Joey'
-});
+
+//grade will until he graduates
+while (!will.graduate()) {
+  //pick instructor or PM randomly
+  if (Math.random() < 0.5) {
+    let gradeChange = mike.changeGrade(will);
+    console.log(`${mike.name} changed ${will.name}'s grade by ${gradeChange}`)
+  } else {
+    let gradeChange = fred.changeGrade(will);
+    console.log(`${fred.name} changed ${will.name}'s grade by ${gradeChange}`)
+  }
+}
 
 
-//instructor tests
-console.log('********Instructors********');
-
-console.log('********Fred********');
-fred.speak();
-fred.demo('JS');
-fred.grade(will, 'HTML');
-Object.entries(fred).forEach(e => console.log(e));
-
-console.log('********Carolie********');
-carolie.speak();
-carolie.demo('JS-II');
-carolie.grade(joe, 'CSS');
-Object.entries(carolie).forEach(e => console.log(e));
-
-
-//student tests
-console.log('********Students********');
-
-console.log('********Will********');
-will.speak();
-will.listsSubjects();
-will.PRAssignment('JS-IV');
-will.sprintChallenge('JS');
-Object.entries(will).forEach(e => console.log(e));
-
-console.log('********Joe********');
-joe.speak();
-joe.listsSubjects();
-joe.PRAssignment('JS-III');
-joe.sprintChallenge('Advanced CSS');
-Object.entries(joe).forEach(e => console.log(e));
-
-
-//PM tests
-console.log(`********PM's********`);
-
-console.log('********Mike********');
-mike.speak();
-mike.demo('JS');
-mike.grade(will, 'HTML');
-mike.standUp('#webpt4');
-mike.debugsCode(will, 'TypeScript');
-Object.entries(mike).forEach(e => console.log(e));
-
-
-console.log('********Robbie********');
-robbie.speak();
-robbie.demo('C');
-robbie.grade(joe, 'CSS');
-robbie.standUp('#general');
-robbie.debugsCode(joe, 'Python');
-Object.entries(robbie).forEach(e => console.log(e));
